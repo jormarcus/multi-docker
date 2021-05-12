@@ -1,10 +1,10 @@
 language: generic
 
 sudo: required
-services: 
+services:
   - docker
 
-before_install: 
+before_install:
   - docker build -t jormarcus/react-test -f ./client/Dockerfile.dev ./client
 
 script:
@@ -22,3 +22,15 @@ after_success:
   - docker push jormarcus/multi-nginx
   - docker push jormarcus/multi-server
   - docker push jormarcus/multi-worker
+
+deploy:
+provider: elasticbeanstalk
+region: 'us-east-1'
+app: 'multi-docker'
+env: 'MultiDocker-env-2'
+bucket_name: 'elasticbeanstalk-us-east-1-245880035191'
+bucket_path: 'docker-multi'
+on:
+  branch: master
+access_key_id: $AWS_ACCESS_KEY
+secret_access_key: $AWS_SECRET_KEY
